@@ -1,0 +1,16 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+server:
+  port: 8767
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/AngeloWong/my-spring-cloud-config.git
+          search-paths: eshop  #Configserver会在 Git仓库根目录以及eshop子目录中查找配置文件。
+      label: master

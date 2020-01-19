@@ -4,6 +4,7 @@ import com.angelo.eshop.service.GreetService;
 import com.angelo.eshop.service.SayHelloService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,9 +34,18 @@ public class GreetingController {
     @Autowired
     private SayHelloService sayHelloService;
 
+    @Value("${defaultName}")
+    private String defaultName;
+
     @RequestMapping(value = "/greeting", method = RequestMethod.GET)
     public String greeting(@RequestParam String name){
-        String result = sayHelloService.sayHello(name);
+        String result = null;
+        if(!StringUtils.isEmpty(name)) {
+            result = sayHelloService.sayHello(name);
+        } else {
+            result = "hello, this is default name: " + defaultName;
+        }
+
         result += ", through greeting service from port: " + port;
         return result;
     }
