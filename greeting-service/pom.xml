@@ -9,12 +9,16 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>say-hello-service</artifactId>
+    <artifactId>greeting-service</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -38,6 +42,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
 
     <build>
         <plugins>
