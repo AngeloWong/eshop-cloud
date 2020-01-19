@@ -18,6 +18,7 @@
         <module>say-hello-service</module>
         <module>greeting-service</module>
         <module>hystrix-turbine-server</module>
+        <module>zuul-server</module>
     </modules>
 
     <properties>
