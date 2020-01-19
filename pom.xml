@@ -17,6 +17,7 @@
         <module>eureka-server</module>
         <module>say-hello-service</module>
         <module>greeting-service</module>
+        <module>hystrix-turbine-server</module>
     </modules>
 
     <properties>
