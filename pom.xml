@@ -24,6 +24,7 @@
         <module>user-service</module>
         <module>eshop-product-service</module>
         <module>eshop-price-service</module>
+        <module>eshop-inventory-service</module>
     </modules>
 
     <properties>
