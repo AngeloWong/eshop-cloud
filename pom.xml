@@ -23,6 +23,7 @@
         <module>sleuth-server</module>
         <module>user-service</module>
         <module>eshop-product-service</module>
+        <module>eshop-price-service</module>
     </modules>
 
     <properties>

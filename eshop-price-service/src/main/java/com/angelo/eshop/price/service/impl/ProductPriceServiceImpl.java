@@ -1,32 +1,35 @@
-package com.roncoo.eshop.price.service.impl;
+package com.angelo.eshop.price.service.impl;
 
+import com.angelo.eshop.price.mapper.ProductPriceMapper;
+import com.angelo.eshop.price.model.ProductPrice;
+import com.angelo.eshop.price.service.ProductPriceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.roncoo.eshop.price.mapper.ProductPriceMapper;
-import com.roncoo.eshop.price.model.ProductPrice;
-import com.roncoo.eshop.price.service.ProductPriceService;
 
 @Service
 public class ProductPriceServiceImpl implements ProductPriceService {
 
-	@Autowired
-	private ProductPriceMapper productPriceMapper;
-	
-	public void add(ProductPrice productPrice) {
-		productPriceMapper.add(productPrice); 
-	}
+    @Autowired
+    private ProductPriceMapper productPriceMapper;
 
-	public void update(ProductPrice productPrice) {
-		productPriceMapper.update(productPrice); 
-	}
+    @Override
+    public void add(ProductPrice productPrice) {
+        productPriceMapper.add(productPrice);
+    }
 
-	public void delete(Long id) {
-		productPriceMapper.delete(id); 
-	}
+    @Override
+    public void update(ProductPrice productPrice) {
+        productPriceMapper.update(productPrice);
+    }
 
-	public ProductPrice findById(Long id) {
-		return productPriceMapper.findById(id);
-	}
+    @Override
+    public void delete(Long id) {
+        productPriceMapper.delete(id);
+    }
+
+    @Override
+    public ProductPrice findById(Long id) {
+        return productPriceMapper.findById(id);
+    }
 
 }
