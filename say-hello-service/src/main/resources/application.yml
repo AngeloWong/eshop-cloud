@@ -3,7 +3,7 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://admin:123456@localhost:8761/eureka/
 
 #  instance:
 #    instance-id: order-1 #此实例注册到eureka服务端的唯一的实例ID
