@@ -22,6 +22,7 @@
         <module>config-server</module>
         <module>sleuth-server</module>
         <module>user-service</module>
+        <module>eshop-product-service</module>
     </modules>
 
     <properties>
