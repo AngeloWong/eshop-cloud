@@ -1,0 +1,22 @@
+server:
+  port: 8765
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://admin:123456@localhost:8761/eureka/
+spring:
+  application:
+    name: eshop-datasync-service #此实例注册到eureka服务端的name
+  zipkin:
+    base-url: http://localhost:9411  #指定Zipkin server地址
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    platform: mysql
+    url: jdbc:mysql://127.0.0.1:3306/eshop?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: root
+    password: angelo
+  rabbitmq:
+    host: localhost
+    port: 15672
+    username: rabbitadmin
+    password: 123456
