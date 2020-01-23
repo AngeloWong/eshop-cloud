@@ -2,6 +2,7 @@ package com.angelo.eshop.datasync.rabbitmq;
 
 import com.alibaba.fastjson.JSONObject;
 import com.angelo.eshop.datasync.service.EshopProductService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import redis.clients.jedis.JedisPool;
  * （2）将原子数据在redis中进行增删改
  * （3）将维度数据变化消息写入rabbitmq中另外一个queue，供数据聚合服务来消费
  */
+@Slf4j
 @Component
 @RabbitListener(queues = "data-change-queue")
 public class DataChangeQueueReceiver {
@@ -28,6 +30,7 @@ public class DataChangeQueueReceiver {
 
     @RabbitHandler
     public void process(String message) {
+        log.info("[data-change-queue] receive the message:"  + message);
         // 对这个message进行解析
         JSONObject jsonObject = JSONObject.parseObject(message);
         // 先获取data_type
@@ -93,7 +96,7 @@ public class DataChangeQueueReceiver {
             jedis.del("product_intro_" + productId);
         }
 
-        rabbitMQSender.send("aggr-data-change-queue", "{\"dim_type\": \"product\", \"id\": " + productId + "}");
+        rabbitMQSender.send("aggr-data-change-queue", "{\"dim_type\": \"product_intro\", \"id\": " + productId + "}");
     }
 
     private void processProductDataChangeMessage(JSONObject messageJSONObject) {

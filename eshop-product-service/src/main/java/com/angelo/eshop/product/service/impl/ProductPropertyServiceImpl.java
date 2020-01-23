@@ -19,19 +19,23 @@ public class ProductPropertyServiceImpl implements ProductPropertyService {
     @Override
     public void add(ProductProperty productProperty) {
         productPropertyMapper.add(productProperty);
-        rabbitMQSender.send(RabbitQueue.DATA_CHANGE_QUEUE, "{\"event_type\": \"add\", \"data_type\": \"product_property\", \"id\": " + productProperty.getId() + "}");
+        rabbitMQSender.send(RabbitQueue.DATA_CHANGE_QUEUE, "{\"event_type\": \"add\", \"data_type\": \"product_property\", " +
+                "\"id\": " + productProperty.getId() + ", \"product_id\":" + productProperty.getProductId()+"}");
     }
 
     @Override
     public void update(ProductProperty productProperty) {
         productPropertyMapper.update(productProperty);
-        rabbitMQSender.send(RabbitQueue.DATA_CHANGE_QUEUE, "{\"event_type\": \"update\", \"data_type\": \"product_property\", \"id\": " + productProperty.getId() + "}");
+        rabbitMQSender.send(RabbitQueue.DATA_CHANGE_QUEUE, "{\"event_type\": \"update\", \"data_type\": \"product_property\", " +
+                "\"id\": " + productProperty.getId() + ", \"product_id\":" + productProperty.getProductId()+"}");
     }
 
     @Override
     public void delete(Long id) {
+        ProductProperty productProperty = findById(id);
         productPropertyMapper.delete(id);
-        rabbitMQSender.send(RabbitQueue.DATA_CHANGE_QUEUE, "{\"event_type\": \"delete\", \"data_type\": \"product_property\", \"id\": " + id + "}");
+        rabbitMQSender.send(RabbitQueue.DATA_CHANGE_QUEUE, "{\"event_type\": \"delete\", \"data_type\": \"product_property\", " +
+                "\"id\": " + productProperty.getId() + ", \"product_id\":" + productProperty.getProductId()+"}");
     }
 
     @Override
