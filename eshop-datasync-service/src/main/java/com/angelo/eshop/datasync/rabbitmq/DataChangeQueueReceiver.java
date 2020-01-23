@@ -10,6 +10,10 @@ import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * 数据同步服务，就是获取各种院子数据的变更消息
  * （1）然后通过 spring cloud fegion调用 eshop-product-service服务的各种接口，获取数据
@@ -27,6 +31,12 @@ public class DataChangeQueueReceiver {
     private JedisPool jedisPool;
     @Autowired
     private RabbitMQSender rabbitMQSender;
+
+    private Set<String> dimDataChangeMessageSet = Collections.synchronizedSet(new HashSet<String>());
+
+    public DataChangeQueueReceiver() {
+        new SendThread().start();
+    }
 
     @RabbitHandler
     public void process(String message) {
@@ -63,7 +73,8 @@ public class DataChangeQueueReceiver {
             jedis.del("brand_" + id);
         }
 
-        rabbitMQSender.send("aggr-data-change-queue", "{\"dim_type\": \"brand\", \"id\": " + id + "}");
+        dimDataChangeMessageSet.add("{\"dim_type\": \"brand\", \"id\": " + id + "}");
+        log.info("【品牌维度数据变更消息被放入内存Set中】");
     }
 
     private void processCategoryDataChangeMessage(JSONObject messageJSONObject) {
@@ -79,7 +90,7 @@ public class DataChangeQueueReceiver {
             jedis.del("category_" + id);
         }
 
-        rabbitMQSender.send("aggr-data-change-queue", "{\"dim_type\": \"category\", \"id\": " + id + "}");
+        dimDataChangeMessageSet.add("{\"dim_type\": \"category\", \"id\": " + id + "}");
     }
 
     private void processProductIntroDataChangeMessage(JSONObject messageJSONObject) {
@@ -96,7 +107,7 @@ public class DataChangeQueueReceiver {
             jedis.del("product_intro_" + productId);
         }
 
-        rabbitMQSender.send("aggr-data-change-queue", "{\"dim_type\": \"product_intro\", \"id\": " + productId + "}");
+        dimDataChangeMessageSet.add("{\"dim_type\": \"product_intro\", \"id\": " + productId + "}");
     }
 
     private void processProductDataChangeMessage(JSONObject messageJSONObject) {
@@ -112,7 +123,7 @@ public class DataChangeQueueReceiver {
             jedis.del("product_" + id);
         }
 
-        rabbitMQSender.send("aggr-data-change-queue", "{\"dim_type\": \"product\", \"id\": " + id + "}");
+        dimDataChangeMessageSet.add("{\"dim_type\": \"product\", \"id\": " + id + "}");
     }
 
     private void processProductPropertyDataChangeMessage(JSONObject messageJSONObject) {
@@ -129,7 +140,7 @@ public class DataChangeQueueReceiver {
             jedis.del("product_property_" + productId);
         }
 
-        rabbitMQSender.send("aggr-data-change-queue", "{\"dim_type\": \"product\", \"id\": " + productId + "}");
+        dimDataChangeMessageSet.add("{\"dim_type\": \"product\", \"id\": " + productId + "}");
     }
 
     private void processProductSpecificationDataChangeMessage(JSONObject messageJSONObject) {
@@ -146,6 +157,26 @@ public class DataChangeQueueReceiver {
             jedis.del("product_specification_" + productId);
         }
 
-        rabbitMQSender.send("aggr-data-change-queue", "{\"dim_type\": \"product\", \"id\": " + productId + "}");
+        dimDataChangeMessageSet.add("{\"dim_type\": \"product\", \"id\": " + productId + "}");
+    }
+    private class SendThread extends Thread {
+
+        @Override
+        public void run() {
+            while (true) {
+                if (!dimDataChangeMessageSet.isEmpty()) {
+                    for (String message : dimDataChangeMessageSet) {
+                        rabbitMQSender.send("aggr-data-change-queue", message);
+                        log.info("【将去重后的维度数据变更消息发送到下一个queue】, messge =>" + message);
+                    }
+                    dimDataChangeMessageSet.clear();
+                }
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }
