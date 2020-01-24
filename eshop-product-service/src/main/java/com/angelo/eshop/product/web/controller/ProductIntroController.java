@@ -14,9 +14,9 @@ public class ProductIntroController {
     private ProductIntroService productIntroService;
 
     @RequestMapping("/add")
-    public String add(ProductIntro productIntro) {
+    public String add(ProductIntro productIntro, String operationType) {
         try {
-            productIntroService.add(productIntro);
+            productIntroService.add(productIntro, operationType);
         } catch (Exception e) {
             e.printStackTrace();
             return "error";
@@ -25,9 +25,9 @@ public class ProductIntroController {
     }
 
     @RequestMapping("/update")
-    public String update(ProductIntro productIntro) {
+    public String update(ProductIntro productIntro, String operationType) {
         try {
-            productIntroService.update(productIntro);
+            productIntroService.update(productIntro, operationType);
         } catch (Exception e) {
             e.printStackTrace();
             return "error";
@@ -36,9 +36,9 @@ public class ProductIntroController {
     }
 
     @RequestMapping("/delete")
-    public String delete(Long id) {
+    public String delete(Long id, String operationType) {
         try {
-            productIntroService.delete(id);
+            productIntroService.delete(id, operationType);
         } catch (Exception e) {
             e.printStackTrace();
             return "error";

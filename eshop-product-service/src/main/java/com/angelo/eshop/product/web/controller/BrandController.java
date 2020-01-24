@@ -14,9 +14,9 @@ public class BrandController {
     private BrandService brandService;
 
     @RequestMapping("/add")
-    public String add(Brand brand) {
+    public String add(Brand brand, String operationType) {
         try {
-            brandService.add(brand);
+            brandService.add(brand, operationType);
         } catch (Exception e) {
             e.printStackTrace();
             return "error";
@@ -25,9 +25,9 @@ public class BrandController {
     }
 
     @RequestMapping("/update")
-    public String update(Brand brand) {
+    public String update(Brand brand, String operationType) {
         try {
-            brandService.update(brand);
+            brandService.update(brand, operationType);
         } catch (Exception e) {
             e.printStackTrace();
             return "error";
@@ -36,9 +36,9 @@ public class BrandController {
     }
 
     @RequestMapping("/delete")
-    public String delete(Long id) {
+    public String delete(Long id, String operationType) {
         try {
-            brandService.delete(id);
+            brandService.delete(id, operationType);
         } catch (Exception e) {
             e.printStackTrace();
             return "error";

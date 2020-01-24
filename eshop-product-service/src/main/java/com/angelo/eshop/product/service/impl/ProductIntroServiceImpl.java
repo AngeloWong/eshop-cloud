@@ -8,6 +8,7 @@ import com.angelo.eshop.product.rabbitmq.RabbitQueue;
 import com.angelo.eshop.product.service.ProductIntroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 public class ProductIntroServiceImpl implements ProductIntroService {
@@ -18,24 +19,54 @@ public class ProductIntroServiceImpl implements ProductIntroService {
     private RabbitMQSender rabbitMQSender;
 
     @Override
-    public void add(ProductIntro productIntro) {
+    public void add(ProductIntro productIntro, String operationType) {
         productIntroMapper.add(productIntro);
-        rabbitMQSender.send(RabbitQueue.DATA_CHANGE_QUEUE,"{\"event_type\": \"add\", \"data_type\": \"product_intro\", " +
+
+        String queue = null;
+        if (StringUtils.isEmpty(operationType)) {
+            queue = RabbitQueue.DATA_CHANGE_QUEUE;
+        } else if ("refresh".equals(operationType)) {
+            queue = RabbitQueue.REFRESH_DATA_CHANGE_QUEUE;
+        } else if ("high".equals(operationType)) {
+            queue = RabbitQueue.HIGH_PRIORITY_DATA_CHANGE_QUEUE;
+        }
+
+        rabbitMQSender.send(queue, "{\"event_type\": \"add\", \"data_type\": \"product_intro\", " +
                 "\"id\": " + productIntro.getId() + ", \"product_id\":" + productIntro.getProductId()+"}");
     }
 
     @Override
-    public void update(ProductIntro productIntro) {
+    public void update(ProductIntro productIntro, String operationType) {
         productIntroMapper.update(productIntro);
-        rabbitMQSender.send(RabbitQueue.DATA_CHANGE_QUEUE, "{\"event_type\": \"update\", \"data_type\": \"product_intro\", " +
+
+        String queue = null;
+        if (StringUtils.isEmpty(operationType)) {
+            queue = RabbitQueue.DATA_CHANGE_QUEUE;
+        } else if ("refresh".equals(operationType)) {
+            queue = RabbitQueue.REFRESH_DATA_CHANGE_QUEUE;
+        } else if ("high".equals(operationType)) {
+            queue = RabbitQueue.HIGH_PRIORITY_DATA_CHANGE_QUEUE;
+        }
+
+        rabbitMQSender.send(queue, "{\"event_type\": \"update\", \"data_type\": \"product_intro\", " +
                 "\"id\": " + productIntro.getId() + ", \"product_id\":" + productIntro.getProductId()+"}");
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(Long id, String operationType) {
         ProductIntro productIntro = findById(id);
         productIntroMapper.delete(id);
-        rabbitMQSender.send(RabbitQueue.DATA_CHANGE_QUEUE, "{\"event_type\": \"delete\", \"data_type\": \"product_intro\", " +
+
+        String queue = null;
+        if (StringUtils.isEmpty(operationType)) {
+            queue = RabbitQueue.DATA_CHANGE_QUEUE;
+        } else if ("refresh".equals(operationType)) {
+            queue = RabbitQueue.REFRESH_DATA_CHANGE_QUEUE;
+        } else if ("high".equals(operationType)) {
+            queue = RabbitQueue.HIGH_PRIORITY_DATA_CHANGE_QUEUE;
+        }
+
+        rabbitMQSender.send(queue, "{\"event_type\": \"delete\", \"data_type\": \"product_intro\", " +
                 "\"id\": " + productIntro.getId() + ", \"product_id\":" + productIntro.getProductId()+"}");
     }
 

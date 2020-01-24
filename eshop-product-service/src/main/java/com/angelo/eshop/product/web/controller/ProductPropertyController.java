@@ -14,9 +14,9 @@ public class ProductPropertyController {
     private ProductPropertyService productPropertyService;
 
     @RequestMapping("/add")
-    public String add(ProductProperty productProperty) {
+    public String add(ProductProperty productProperty, String operationType) {
         try {
-            productPropertyService.add(productProperty);
+            productPropertyService.add(productProperty, operationType);
         } catch (Exception e) {
             e.printStackTrace();
             return "error";
@@ -25,9 +25,9 @@ public class ProductPropertyController {
     }
 
     @RequestMapping("/update")
-    public String update(ProductProperty productProperty) {
+    public String update(ProductProperty productProperty, String operationType) {
         try {
-            productPropertyService.update(productProperty);
+            productPropertyService.update(productProperty, operationType);
         } catch (Exception e) {
             e.printStackTrace();
             return "error";
@@ -36,9 +36,9 @@ public class ProductPropertyController {
     }
 
     @RequestMapping("/delete")
-    public String delete(Long id) {
+    public String delete(Long id, String operationType) {
         try {
-            productPropertyService.delete(id);
+            productPropertyService.delete(id, operationType);
         } catch (Exception e) {
             e.printStackTrace();
             return "error";

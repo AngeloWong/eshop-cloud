@@ -14,9 +14,9 @@ public class ProductSpecificationController {
     private ProductSpecificationService productSpecificationService;
 
     @RequestMapping("/add")
-    public String add(ProductSpecification productSpecification) {
+    public String add(ProductSpecification productSpecification, String operationType) {
         try {
-            productSpecificationService.add(productSpecification);
+            productSpecificationService.add(productSpecification, operationType);
         } catch (Exception e) {
             e.printStackTrace();
             return "error";
@@ -25,9 +25,9 @@ public class ProductSpecificationController {
     }
 
     @RequestMapping("/update")
-    public String update(ProductSpecification productSpecification) {
+    public String update(ProductSpecification productSpecification, String operationType) {
         try {
-            productSpecificationService.update(productSpecification);
+            productSpecificationService.update(productSpecification, operationType);
         } catch (Exception e) {
             e.printStackTrace();
             return "error";
@@ -36,9 +36,9 @@ public class ProductSpecificationController {
     }
 
     @RequestMapping("/delete")
-    public String delete(Long id) {
+    public String delete(Long id, String operationType) {
         try {
-            productSpecificationService.delete(id);
+            productSpecificationService.delete(id, operationType);
         } catch (Exception e) {
             e.printStackTrace();
             return "error";

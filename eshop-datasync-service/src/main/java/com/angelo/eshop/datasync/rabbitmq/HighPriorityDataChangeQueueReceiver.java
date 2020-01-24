@@ -22,8 +22,8 @@ import java.util.Set;
  */
 @Slf4j
 @Component
-@RabbitListener(queues = "data-change-queue")
-public class DataChangeQueueReceiver {
+@RabbitListener(queues = "high-priority-data-change-queue")
+public class HighPriorityDataChangeQueueReceiver {
 
     @Autowired
     private EshopProductService eshopProductService;
@@ -34,7 +34,7 @@ public class DataChangeQueueReceiver {
 
     private Set<String> dimDataChangeMessageSet = Collections.synchronizedSet(new HashSet<String>());
 
-    public DataChangeQueueReceiver() {
+    public HighPriorityDataChangeQueueReceiver() {
         new SendThread().start();
     }
 
@@ -166,8 +166,8 @@ public class DataChangeQueueReceiver {
             while (true) {
                 if (!dimDataChangeMessageSet.isEmpty()) {
                     for (String message : dimDataChangeMessageSet) {
-                        rabbitMQSender.send("aggr-data-change-queue", message);
-                        log.info("【将去重后的维度数据变更消息发送到下一个queue[aggr-data-change-queue]】, messge =>" + message);
+                        rabbitMQSender.send("high-priority-aggr-data-change-queue", message);
+                        log.info("【将去重后的维度数据变更消息发送到下一个queue[high-priority-aggr-data-change-queue]】, messge =>" + message);
                     }
                     dimDataChangeMessageSet.clear();
                 }
