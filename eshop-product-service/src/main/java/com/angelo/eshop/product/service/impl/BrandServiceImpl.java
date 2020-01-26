@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
+
 @Service
 public class BrandServiceImpl implements BrandService {
 
@@ -66,6 +68,11 @@ public class BrandServiceImpl implements BrandService {
     @Override
     public Brand findById(Long id) {
         return brandMapper.findById(id);
+    }
+
+    @Override
+    public List<Brand> findByIds(String ids) {
+        return brandMapper.findByIds(ids);
     }
 
 }

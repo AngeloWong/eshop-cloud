@@ -1,11 +1,9 @@
 package com.angelo.eshop.product.mapper;
 
 import com.angelo.eshop.product.model.Brand;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 
 @Mapper
@@ -22,5 +20,8 @@ public interface BrandMapper {
 
     @Select("SELECT * FROM brand WHERE id=#{id}")
     public Brand findById(Long id);
+
+    @Select("SELECT * FROM brand WHERE id in (${ids})")
+    public List<Brand> findByIds(@Param("ids") String ids);
 
 }
