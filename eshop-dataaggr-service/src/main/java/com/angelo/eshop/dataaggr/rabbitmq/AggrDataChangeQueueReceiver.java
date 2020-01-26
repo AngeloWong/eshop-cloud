@@ -1,15 +1,16 @@
 package com.angelo.eshop.dataaggr.rabbitmq;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
+import org.springframework.util.CollectionUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -91,25 +92,33 @@ public class AggrDataChangeQueueReceiver {
 
         Jedis jedis = jedisPool.getResource();
 
-        String productDataJSON = jedis.get("product_" + id);
+        List<String> results = jedis.mget("product_" + id, "product_property_" + id, "product_specification_" + id);
 
-        if (productDataJSON != null && !"".equals(productDataJSON)) {
-            JSONObject productDataJSONObject = JSONObject.parseObject(productDataJSON);
+        if (!CollectionUtils.isEmpty(results) && results.size() == 3) {
+            String productDataJSON = results.get(0);
 
-            String productPropertyDataJSON = jedis.get("product_property_" + id);
-            if (productPropertyDataJSON != null && !"".equals(productPropertyDataJSON)) {
-                productDataJSONObject.put("product_property", JSONObject.parse(productPropertyDataJSON));
+            if (productDataJSON != null && !"".equals(productDataJSON)) {
+                JSONObject productDataJSONObject = JSONObject.parseObject(productDataJSON);
+
+                String productPropertyDataJSON = results.get(1);
+                if (productPropertyDataJSON != null && !"".equals(productPropertyDataJSON)) {
+                    productDataJSONObject.put("product_property", JSONObject.parse(productPropertyDataJSON));
+                }
+
+                String productSpecificationDataJSON = results.get(2);
+                if (productSpecificationDataJSON != null && !"".equals(productSpecificationDataJSON)) {
+                    productDataJSONObject.put("product_specification", JSONObject.parse(productSpecificationDataJSON));
+                }
+
+                jedis.set("dim_product_" + id, productDataJSONObject.toJSONString());
+            } else {
+                jedis.del("dim_product_" + id);
             }
-
-            String productSpecificationDataJSON = jedis.get("product_specification_" + id);
-            if (productSpecificationDataJSON != null && !"".equals(productSpecificationDataJSON)) {
-                productDataJSONObject.put("product_specification", JSONObject.parse(productSpecificationDataJSON));
-            }
-
-            jedis.set("dim_product_" + id, productDataJSONObject.toJSONString());
         } else {
             jedis.del("dim_product_" + id);
         }
+
+
     }
 
 }  
