@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>eshop-datasync-service</artifactId>
+    <artifactId>eshop-datalink-service</artifactId>
 
     <dependencies>
         <dependency>
@@ -90,4 +90,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

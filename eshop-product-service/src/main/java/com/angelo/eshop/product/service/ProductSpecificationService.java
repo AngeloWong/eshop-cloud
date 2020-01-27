@@ -13,4 +13,6 @@ public interface ProductSpecificationService {
 
     public ProductSpecification findById(Long id);
 
+    public ProductSpecification findByProductId(Long productId);
+
 }

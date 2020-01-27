@@ -1,11 +1,7 @@
 package com.angelo.eshop.product.mapper;
 
 import com.angelo.eshop.product.model.ProductProperty;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 
 @Mapper
@@ -22,5 +18,8 @@ public interface ProductPropertyMapper {
 
     @Select("SELECT * FROM product_property WHERE id=#{id}")
     public ProductProperty findById(Long id);
+
+    @Select("SELECT * FROM product_property WHERE product_id=#{productId}")
+    public ProductProperty findByProductId(@Param("productId") Long productId);
 
 }
