@@ -20,7 +20,7 @@ public class DataLinkController {
     @Autowired
     private JedisPool jedisPool;
 
-    @RequestMapping("/getProduct")
+    @RequestMapping("/product")
     public String getProduct(Long productId) {
         // TODO 先读本地的ehcache
 
@@ -50,6 +50,6 @@ public class DataLinkController {
             }
         }
 
-        return "";
+        return dimProductJSON;
     }
 }
