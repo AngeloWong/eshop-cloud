@@ -92,32 +92,52 @@ public class AggrDataChangeQueueReceiver {
 
         Jedis jedis = jedisPool.getResource();
 
-        List<String> results = jedis.mget("product_" + id, "product_property_" + id, "product_specification_" + id);
+        // TODO 此处因使用twemproxy 将redis数据散列存储，为提高性能，需使用 hash tag 优化
+//        List<String> results = jedis.mget("product_" + id, "product_property_" + id, "product_specification_" + id);
+//
+//        if (!CollectionUtils.isEmpty(results) && results.size() == 3) {
+//            String productDataJSON = results.get(0);
+//
+//            if (productDataJSON != null && !"".equals(productDataJSON)) {
+//                JSONObject productDataJSONObject = JSONObject.parseObject(productDataJSON);
+//
+//                String productPropertyDataJSON = results.get(1);
+//                if (productPropertyDataJSON != null && !"".equals(productPropertyDataJSON)) {
+//                    productDataJSONObject.put("product_property", JSONObject.parse(productPropertyDataJSON));
+//                }
+//
+//                String productSpecificationDataJSON = results.get(2);
+//                if (productSpecificationDataJSON != null && !"".equals(productSpecificationDataJSON)) {
+//                    productDataJSONObject.put("product_specification", JSONObject.parse(productSpecificationDataJSON));
+//                }
+//
+//                jedis.set("dim_product_" + id, productDataJSONObject.toJSONString());
+//            } else {
+//                jedis.del("dim_product_" + id);
+//            }
+//        } else {
+//            jedis.del("dim_product_" + id);
+//        }
 
-        if (!CollectionUtils.isEmpty(results) && results.size() == 3) {
-            String productDataJSON = results.get(0);
+        String productDataJSON = jedis.get("product_" + id);
 
-            if (productDataJSON != null && !"".equals(productDataJSON)) {
-                JSONObject productDataJSONObject = JSONObject.parseObject(productDataJSON);
+        if (productDataJSON != null && !"".equals(productDataJSON)) {
+            JSONObject productDataJSONObject = JSONObject.parseObject(productDataJSON);
 
-                String productPropertyDataJSON = results.get(1);
-                if (productPropertyDataJSON != null && !"".equals(productPropertyDataJSON)) {
-                    productDataJSONObject.put("product_property", JSONObject.parse(productPropertyDataJSON));
-                }
-
-                String productSpecificationDataJSON = results.get(2);
-                if (productSpecificationDataJSON != null && !"".equals(productSpecificationDataJSON)) {
-                    productDataJSONObject.put("product_specification", JSONObject.parse(productSpecificationDataJSON));
-                }
-
-                jedis.set("dim_product_" + id, productDataJSONObject.toJSONString());
-            } else {
-                jedis.del("dim_product_" + id);
+            String productPropertyDataJSON = jedis.get("product_property_" + id);
+            if (productPropertyDataJSON != null && !"".equals(productPropertyDataJSON)) {
+                productDataJSONObject.put("product_property", JSONObject.parse(productPropertyDataJSON));
             }
+
+            String productSpecificationDataJSON = jedis.get("product_specification_" + id);
+            if (productSpecificationDataJSON != null && !"".equals(productSpecificationDataJSON)) {
+                productDataJSONObject.put("product_specification", JSONObject.parse(productSpecificationDataJSON));
+            }
+
+            jedis.set("dim_product_" + id, productDataJSONObject.toJSONString());
         } else {
             jedis.del("dim_product_" + id);
         }
-
 
     }
 
