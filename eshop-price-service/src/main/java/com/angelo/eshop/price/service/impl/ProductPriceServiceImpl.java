@@ -6,6 +6,7 @@ import com.angelo.eshop.price.model.ProductPrice;
 import com.angelo.eshop.price.service.ProductPriceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -44,4 +45,16 @@ public class ProductPriceServiceImpl implements ProductPriceService {
         return productPriceMapper.findById(id);
     }
 
+    @Override
+    public ProductPrice findByProductId(Long productId) {
+        Jedis jedis = jedisPool.getResource();
+        String dataJSON = jedis.get("product_price_" + productId);
+        if (!StringUtils.isEmpty(dataJSON)) {
+            JSONObject dataJSONObject = JSONObject.parseObject(dataJSON);
+            dataJSONObject.put("id", "-1");
+            return dataJSONObject.toJavaObject(ProductPrice.class);
+        } else {
+            return productPriceMapper.findByProductId(productId);
+        }
+    }
 }
