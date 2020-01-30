@@ -1,11 +1,12 @@
 spring:
   application.name: hystrix-turbine-server
 server:
-  port: 8765
+  port: 8770
 turbine:
   aggregator:
     clusterConfig: default
-  appConfig: say-hello-service
+  appConfig: eshop-one-service
+#  appConfig: say-hello-service
   clusterNameExpression: new String("default")
 eureka:
   client:
