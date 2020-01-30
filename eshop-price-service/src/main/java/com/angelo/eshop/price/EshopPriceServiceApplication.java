@@ -22,6 +22,6 @@ public class EshopPriceServiceApplication {
         config.setMaxIdle(5);
         config.setMaxWaitMillis(1000 * 10);
         config.setTestOnBorrow(true);
-        return new JedisPool(config, "localhost", 6379);
+        return new JedisPool(config, "10.0.3.11", 1111);
     }
 }
