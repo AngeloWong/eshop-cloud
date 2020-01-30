@@ -3,12 +3,12 @@ server:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://admin:123456@localhost:8761/eureka/
+      defaultZone: http://admin:123456@10.0.3.13:8761/eureka/
 spring:
   application:
     name: eshop-price-service #此实例注册到eureka服务端的name
   zipkin:
-    base-url: http://localhost:9411  #指定Zipkin server地址
+    base-url: http://10.0.3.13:9411  #指定Zipkin server地址
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     platform: mysql
